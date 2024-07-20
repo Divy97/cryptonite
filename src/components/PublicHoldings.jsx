@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import CustomLineChart from "@/components/charts/CustomLineChart";
-import Loading from "@/components/Loading";
-import Error from "@/components/Error";
+import Loading from "@/components/common/Loading";
+import Error from "@/components/common/Error";
 import useFetch from "@/utils/api";
 import { useSelector } from "react-redux";
 

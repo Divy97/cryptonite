@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -14,30 +13,22 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setCoinNames } from "@/redux/features/coinNamesSlice";
 import { toggleDarkMode } from "@/redux/features/themeSlice";
-import useFetch from "@/utils/api";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const coinNames = useSelector((state) => state.coinNames.items);
+  const allCoins = useSelector((state) => state.coins.items);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
-  const coinNames = useSelector((state) => state.coinNames.items);
-
-  const {
-    data: coinsData,
-    loading,
-    error,
-  } = useFetch(
-    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
-  );
 
   useEffect(() => {
-    if (coinsData && coinsData.length > 0) {
-      dispatch(setCoinNames(coinsData));
+    if (allCoins.length > 0) {
+      dispatch(setCoinNames(allCoins));
     }
-  }, [coinsData, dispatch]);
+  }, [allCoins, dispatch]);
 
   useEffect(() => {
     if (searchTerm.length > 0 && coinNames.length > 0) {
@@ -76,7 +67,6 @@ const Navbar = () => {
             <Link href="/">Cryptonite</Link>
           </span>
         </div>
-
         <div className="hidden md:flex space-x-8">
           <Link href="/" className="relative hover:text-blue-500">
             Home
@@ -91,13 +81,11 @@ const Navbar = () => {
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-blue-500 transform scale-x-0 transition-transform duration-300 ease-in-out hover:scale-x-100"></span>
           </Link>
         </div>
-
         <div className="md:hidden">
           <button onClick={handleToggleMobileMenu}>
             {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
-
         <div className="hidden md:flex items-center space-x-4 relative">
           <div className="relative">
             <input
@@ -140,7 +128,6 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-
       {isMobileMenuOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2">
           <div className="flex items-center space-x-2">
@@ -187,15 +174,6 @@ const Navbar = () => {
           <Link href="/" className="block hover:text-blue-500">
             Contact
           </Link>
-          <div className="flex items-center space-x-2 justify-between">
-            <FaUserCircle className="text-2xl" />
-            <button
-              onClick={handleToggleDarkMode}
-              className="focus:outline-none"
-            >
-              {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon />}
-            </button>
-          </div>
         </div>
       )}
     </nav>

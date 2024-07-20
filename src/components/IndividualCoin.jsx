@@ -5,8 +5,8 @@ import axios from "axios";
 import useFetch from "@/utils/api";
 import FluctuationChart from "@/components/charts/CustomLineChart";
 import { FaPlusSquare } from "react-icons/fa";
-import Loading from "./Loading";
-import Error from "./Error";
+import Loading from "./common/Loading";
+import Error from "./common/Error";
 
 const IndividualCoin = ({ coinId }) => {
   const [coinInfo, setCoinInfo] = useState(null);

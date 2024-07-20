@@ -1,39 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { setSelectedCoin } from "@/redux/features/selectedCoinSlice";
+import simulatePriceUpdates from "@/utils/priceSimulator";
 import CustomLineChart from "@/components/charts/CustomLineChart";
 import CoinsTable from "@/components/table/CoinsTable";
 import WatchListTable from "@/components/table/WatchList";
-import useFetch from "@/utils/api";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { setCoins } from "@/redux/features/coinSlice";
-import { setSelectedCoin } from "@/redux/features/selectedCoinSlice";
-
-import simulatePriceUpdates from "@/utils/priceSimulator";
 import Ticker from "@/components/Ticker";
-import Loading from "@/components/Loading";
-import Error from "@/components/Error";
+import Loading from "@/components/common/Loading";
+import Error from "@/components/common/Error";
 import PublicCompaniesHoldings from "@/components/PublicHoldings";
 
 const Home = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const coins = useSelector((state) => state.coins.items);
+  const loading = useSelector((state) => state.coins.loading);
+  const error = useSelector((state) => state.coins.error);
   const darkMode = useSelector((state) => state.theme.darkMode);
-  const {
-    data: coinData,
-    loading,
-    error,
-  } = useFetch(
-    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
-  );
-
-  useEffect(() => {
-    if (coinData) {
-      dispatch(setCoins(coinData));
-    }
-  }, [coinData, dispatch]);
 
   useEffect(() => {
     simulatePriceUpdates();
