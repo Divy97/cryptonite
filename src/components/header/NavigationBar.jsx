@@ -174,6 +174,15 @@ const Navbar = () => {
           <Link href="/" className="block hover:text-blue-500">
             Contact
           </Link>
+          <div className="flex justify-between mt-1">
+            <FaUserCircle className="text-2xl" />
+            <button
+              onClick={handleToggleDarkMode}
+              className="focus:outline-none"
+            >
+              {darkMode ? <FaSun className="text-yellow-400" /> : <FaMoon />}
+            </button>
+          </div>
         </div>
       )}
     </nav>
