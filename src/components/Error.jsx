@@ -5,17 +5,24 @@ import { useSelector } from "react-redux";
 const Error = ({ error }) => {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
+  let errorMessage = "";
+  if (typeof error === "string") {
+    errorMessage = error;
+  } else if (error instanceof Error) {
+    errorMessage = error.message;
+  } else {
+    errorMessage = JSON.stringify(error);
+  }
+
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full m-auto flex items-center justify-center">
       <div
-        className={`shadow-md rounded-lg p-6 text-center ${
-          darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-200 text-gray-800"
+        className={` shadow-md rounded-lg p-6 text-center ${
+          darkMode ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-900"
         }`}
       >
         <svg
-          className={`h-12 w-12 mb-4 mx-auto ${
-            darkMode ? "text-red-500" : "text-red-600"
-          }`}
+          className="h-12 w-12 text-red-600 mb-4 mx-auto"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -28,7 +35,7 @@ const Error = ({ error }) => {
             d="M12 9v2m0 4h.01M12 17a1 1 0 100-2 1 1 0 000 2zm0 6a9 9 0 100-18 9 9 0 000 18z"
           />
         </svg>
-        <p className="text-lg mb-4">{error}</p>
+        <p className="text-lg mb-4">{errorMessage}</p>
       </div>
     </div>
   );

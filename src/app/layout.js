@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/header/NavigationBar";
 import { StoreProvider } from "./StoreProvider";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,9 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <StoreProvider>
           <Navbar />
-          <div>{children}</div>
+          <ErrorBoundary>
+            <div>{children}</div>
+          </ErrorBoundary>
         </StoreProvider>
       </body>
     </html>

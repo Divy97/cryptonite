@@ -113,7 +113,7 @@ const Home = () => {
           </div>
 
           <div
-            className={`shadow p-6 rounded-lg ${
+            className={`shadow rounded-lg ${
               darkMode ? "bg-gray-800" : "bg-white"
             }`}
           >

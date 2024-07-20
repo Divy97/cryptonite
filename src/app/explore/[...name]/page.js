@@ -1,4 +1,3 @@
-"use client";
 import IndividualCoin from "@/components/IndividualCoin";
 
 const Coin = ({ params }) => {

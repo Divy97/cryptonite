@@ -97,10 +97,6 @@ const WatchList = ({ coins }) => {
                   <td className="flex justify-center px-3 py-5 border-b border-gray-200 dark:border-gray-700 text-sm">
                     {coin.price_change_24h > 0 ? (
                       <span className="relative inline-block px-3 py-3 font-semibold leading-tight">
-                        <span
-                          aria-hidden
-                          className="absolute inset-0 bg-green-100 dark:bg-green-200 opacity-75 rounded-full"
-                        ></span>
                         <span className="relative flex justify-center align-middle gap-1">
                           <IoIosArrowUp
                             className="text-green-600 dark:text-green-500"
@@ -113,10 +109,6 @@ const WatchList = ({ coins }) => {
                       </span>
                     ) : (
                       <span className="relative inline-block px-3 py-3 font-semibold leading-tight">
-                        <span
-                          aria-hidden
-                          className="absolute inset-0 bg-red-100 opacity-75 rounded-full dark:bg-red-100"
-                        ></span>
                         <span className="relative flex justify-center align-middle gap-1">
                           <IoIosArrowDown
                             className="text-red-600 dark:text-red-500"
