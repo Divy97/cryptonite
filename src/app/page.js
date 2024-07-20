@@ -26,8 +26,13 @@ const Home = () => {
   }, []);
 
   const handleRowClick = (coin) => {
-    dispatch(setSelectedCoin(coin));
-    router.push(`/explore/${coin}`);
+    const isValidCoinId = /^[a-zA-Z0-9]+$/.test(coin);
+    if (isValidCoinId) {
+      dispatch(setSelectedCoin(coin));
+      router.push(`/explore/${coin}`);
+    } else {
+      alert("NO Data Found");
+    }
   };
 
   if (loading) {
