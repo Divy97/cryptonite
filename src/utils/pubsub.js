@@ -1,3 +1,4 @@
+"use client";
 class PubSub {
   constructor() {
     this.events = {};

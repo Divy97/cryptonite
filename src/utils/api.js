@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const cache = new Map();
+
 const useFetch = (url, cacheDuration = 120000) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -9,26 +11,24 @@ const useFetch = (url, cacheDuration = 120000) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const cachedData = localStorage.getItem(url);
-      const currentTime = Date.now();
+      const cachedData = cache.get(url);
 
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData);
-        if (currentTime - parsedData.timestamp < cacheDuration) {
-          console.log("From cache", parsedData.data);
-          setData(parsedData.data);
-          setLoading(false);
-          return;
-        }
+      if (cachedData && Date.now() - cachedData.timestamp < cacheDuration) {
+        console.log("from cache");
+        setData(cachedData.data);
+        setLoading(false);
+        return;
       }
 
       try {
         const response = await axios.get(url);
         const result = response.data;
-        localStorage.setItem(
-          url,
-          JSON.stringify({ data: result, timestamp: currentTime })
-        );
+
+        cache.set(url, {
+          data: result,
+          timestamp: Date.now(),
+        });
+
         setData(result);
       } catch (err) {
         setError(err.message); // Store only the error message

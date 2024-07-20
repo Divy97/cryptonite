@@ -1,11 +1,10 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
 import useFetch from "@/utils/api";
 import FluctuationChart from "@/components/charts/CustomLineChart";
 import { FaPlusSquare } from "react-icons/fa";
-import axios from "axios";
 import Loading from "./Loading";
 import Error from "./Error";
 
@@ -20,8 +19,11 @@ const IndividualCoin = ({ coinId }) => {
   const darkMode = useSelector((state) => state.theme.darkMode);
 
   const [historicalData, setHistoricalData] = useState();
+
   // Fetch historical data for the chart
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (typeof window === "undefined") return; // Skip fetching on the server
+
     setLoading(true);
     try {
       const end = Math.floor(Date.now() / 1000);
@@ -49,11 +51,11 @@ const IndividualCoin = ({ coinId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [coinId]);
 
   useEffect(() => {
     fetchData();
-  }, [coinId]);
+  }, [fetchData]);
 
   useEffect(() => {
     if (coinDetails) {
