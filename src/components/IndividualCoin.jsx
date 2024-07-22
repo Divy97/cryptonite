@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import useFetch from "@/utils/api";
 import FluctuationChart from "@/components/charts/CustomLineChart";
 import { FaPlusSquare } from "react-icons/fa";
@@ -10,58 +9,34 @@ import Error from "./common/Error";
 
 const IndividualCoin = ({ coinId }) => {
   const [coinInfo, setCoinInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-  // Fetch coin details from Redux state
   const coinDetails = useSelector((state) =>
     state.coins.items.find((coin) => coin.id === coinId)
   );
   const darkMode = useSelector((state) => state.theme.darkMode);
 
-  const [historicalData, setHistoricalData] = useState();
+  const historicalDataUrl = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=365`;
 
-  // Fetch historical data for the chart
-  const fetchData = useCallback(async () => {
-    if (typeof window === "undefined") return; // Skip fetching on the server
-
-    setLoading(true);
-    try {
-      const end = Math.floor(Date.now() / 1000);
-      const start = end - 365 * 24 * 60 * 60; // one year ago
-      const response = await axios.get(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`,
-        {
-          params: {
-            vs_currency: "usd",
-            from: start,
-            to: end,
-          },
-        }
-      );
-
-      const formattedData = response.data.prices.map(([timestamp, price]) => ({
-        date: new Date(timestamp).toLocaleDateString(),
-        price,
-      }));
-
-      setHistoricalData(formattedData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [coinId]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const { data: historicalData, loading, error } = useFetch(historicalDataUrl);
 
   useEffect(() => {
     if (coinDetails) {
       setCoinInfo(coinDetails);
     }
   }, [coinDetails]);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error error={error} />;
+  }
+
+  const formattedData =
+    historicalData?.prices.map(([timestamp, price]) => ({
+      date: new Date(timestamp).toLocaleDateString(),
+      price,
+    })) || [];
 
   if (loading) {
     return <Loading />;
@@ -117,7 +92,7 @@ const IndividualCoin = ({ coinId }) => {
                 }`}
               >
                 <FluctuationChart
-                  data={historicalData}
+                  data={formattedData}
                   xKey="date"
                   yKey="price"
                   height={250}

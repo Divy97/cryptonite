@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { setSelectedCoin } from "@/redux/features/selectedCoinSlice";
 import simulatePriceUpdates from "@/utils/priceSimulator";
 import CustomLineChart from "@/components/charts/CustomLineChart";
 import CoinsTable from "@/components/table/CoinsTable";
@@ -14,8 +13,6 @@ import Error from "@/components/common/Error";
 import PublicCompaniesHoldings from "@/components/PublicHoldings";
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
   const coins = useSelector((state) => state.coins.items);
   const loading = useSelector((state) => state.coins.loading);
   const error = useSelector((state) => state.coins.error);
@@ -24,16 +21,6 @@ const Home = () => {
   useEffect(() => {
     simulatePriceUpdates();
   }, []);
-
-  const handleRowClick = (coin) => {
-    const isValidCoinId = /^[a-zA-Z0-9]+$/.test(coin);
-    if (isValidCoinId) {
-      dispatch(setSelectedCoin(coin));
-      router.push(`/explore/${coin}`);
-    } else {
-      alert("NO Data Found");
-    }
-  };
 
   if (loading) {
     return <Loading />;
@@ -113,7 +100,7 @@ const Home = () => {
         </div>
 
         <div className={`mt-6 flex flex-col lg:flex-row gap-6`}>
-          <CoinsTable coins={coins} onRowClick={handleRowClick} />
+          <CoinsTable coins={coins} />
 
           <div
             className={`rounded-lg  shadow p-6 ${

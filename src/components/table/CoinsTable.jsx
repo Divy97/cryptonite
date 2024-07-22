@@ -3,12 +3,13 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useDrag } from "react-dnd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { setSelectedCoin } from "@/redux/features/selectedCoinSlice";
 
 const ITEMS_PER_PAGE = 20;
 
-const CoinsTable = ({ onRowClick }) => {
+const CoinsTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const darkMode = useSelector((state) => state.theme.darkMode);
   const coins = useSelector((state) => state.coins.items);
@@ -81,11 +82,7 @@ const CoinsTable = ({ onRowClick }) => {
           </thead>
           <tbody>
             {currentItems.map((coin) => (
-              <DraggableCoinRow
-                key={coin.id}
-                coin={coin}
-                onRowClick={onRowClick}
-              />
+              <DraggableCoinRow key={coin.id} coin={coin} />
             ))}
           </tbody>
         </table>
@@ -123,8 +120,19 @@ const CoinsTable = ({ onRowClick }) => {
   );
 };
 
-const DraggableCoinRow = ({ coin, onRowClick }) => {
+const DraggableCoinRow = ({ coin }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const handleRowClick = (coin) => {
+    console.log("handleRowClick", coin);
+    const isValidCoinId = /^[a-zA-Z0-9]+$/.test(coin);
+    if (isValidCoinId) {
+      dispatch(setSelectedCoin(coin));
+      router.push(`/explore/${coin}`);
+    } else {
+      alert("NO Data Found");
+    }
+  };
   const darkMode = useSelector((state) => state.theme.darkMode);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "COIN",
@@ -143,7 +151,7 @@ const DraggableCoinRow = ({ coin, onRowClick }) => {
           ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
           : "bg-white text-gray-900 hover:bg-gray-100"
       }`}
-      onClick={() => onRowClick(coin?.name.toLowerCase())}
+      onClick={() => handleRowClick(coin?.name.toLowerCase())}
     >
       <td className="px-3 py-5 border-b border-gray-200 dark:border-gray-700 text-sm">
         <div className="flex">
